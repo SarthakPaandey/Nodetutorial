@@ -1,41 +1,44 @@
-const fs = require("fs");
-const path = require("path");
+// const fs = require("fs");
+// const path = require("path");
 
-const sourcePath = "/home/sarthak-pandey/Documents/my-node-app/file.txt";
-const destinationDir = "/home/sarthak-pandey/Documents/my-node-app/dir";
+// const sourcePath = "/home/sarthak-pandey/Documents/my-node-app/file.txt";
+// const destinationDir = "/home/sarthak-pandey/Documents/my-node-app/dir";
 
-const fileName = path.basename(sourcePath);
-const destinationPath = path.join(destinationDir, fileName);
+// const fileName = path.basename(sourcePath);
+// const destinationPath = path.join(destinationDir, fileName);
 
-fs.copyFile(sourcePath, destinationPath, (err) => {
-  if (err) throw err;
-  console.log("File was copied successfully");
-});
+// fs.copyFile(sourcePath, destinationPath, (err) => {
+//   if (err) throw err;
+//   console.log("File was copied successfully");
+// });
 // fs.unlinkSync(file.txt);
 
-// const http = require("http");
+const http = require("http");
+const fs = require("fs");
 
-// const server = http.createServer((req, res) => {
-//   res.setHeader("Content-Type", "text/html");
+const hostname = "localhost";
+const port = 3000;
 
-//   if (req.url === "/login") {
-//     res.write("<html>");
-//     res.write("<head><title>Hello World</title></head>");
-//     res.write("<body><h1>Hello World</h1></body>");
-//     res.write("</html>");
-//   } else {
-//     res.write("<html>");
-//     res.write("<head><title>Hello Login</title></head>");
-//     res.write("<body><h1>Hello Login</h1></body>");
-//     res.write("</html>");
-//   }
+const server = http.createServer((req, res) => {
+  if (req.url === "/") {
+    fs.readFile("index.html", (err, data) => {
+      if (err) {
+        res.statusCode = 500;
+        res.setHeader("Content-Type", "text/plain");
+        res.end("Error loading index.html");
+      } else {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/html");
+        res.end(data);
+      }
+    });
+  } else {
+    res.statusCode = 404;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Not Found");
+  }
+});
 
-//   res.end();
-// });
-
-// // Listen on both ports
-// const port3000 = 3000;
-// const host3000 = "localhost";
-// server.listen(port3000, host3000, () => {
-//   console.log(`Server is running on http://${host3000}:${port3000}`);
-// });
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
